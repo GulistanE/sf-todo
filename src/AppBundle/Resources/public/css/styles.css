@@ -1,0 +1,20 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.container,
+.jumbotron .container {
+    max-width: 600px;
+}
+
+.todo a {
+    margin: 0 6px 6px 0;
+}
+
+.todo em {
+    display: inline-block;
+    margin-left: 12px;
+    float: right;
+    color: #bbb;
+}

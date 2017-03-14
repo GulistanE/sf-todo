@@ -1,0 +1,18 @@
+AppBundle\Entity\Todo:
+    type: entity
+    table: null
+    repositoryClass: AppBundle\Repository\TodoRepository
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        content:
+            type: text
+        trashed:
+            type: boolean
+        date:
+            type: datetime
+    lifecycleCallbacks: {  }

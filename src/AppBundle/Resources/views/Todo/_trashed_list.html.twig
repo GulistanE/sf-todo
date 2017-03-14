@@ -1,0 +1,26 @@
+{% for todo in todos %}
+<div class="row todo">
+    <div class="col-sm-11">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <em>Publié le {{ todo.date|date('d/m/Y') }}</em>
+                <p>
+                {{ todo.content }}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-1">
+        <p>
+            {# Bouton de restauration #}
+            <a href="{{ path('todo_restore', { 'id': todo.id }) }}" class="btn btn-xs btn-primary">
+                <span class="glyphicon glyphicon-repeat"></span>
+            </a>
+            {# Bouton de suppression #}
+            <a href="{{ path('todo_remove', { 'id': todo.id }) }}" onclick="return confirm('Confirmer la suppression ?')" class="btn btn-xs btn-danger">
+                <span class="glyphicon glyphicon-remove"></span>
+            </a>
+        </p>
+    </div>
+</div>
+{%  endfor %}

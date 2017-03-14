@@ -1,0 +1,26 @@
+{% extends "AppBundle::base.html.twig" %}
+
+{% block body %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>ToDoList</h1>
+
+            {{ form_start(form)}}
+                {{ form_widget(form)}}
+            
+                <button type="submit" 
+                        class="btn btn-success">
+                    <span class="glyphicon glyphicon-plus"></span> Ajouter
+                </button>
+            {{ form_end(form)}}
+
+        </div>
+    </div>
+    <div class="container">
+        {#%  if mode == 'trashed' %#}
+            {% include "AppBundle:Todo:_trashed_list.html.twig" with {'todos': todos} %}
+        {#%  else %#}
+            {% include "AppBundle:Todo:_default_list.html.twig" with {'todos': todos} %}
+        {#%  endif %#}
+    </div>
+{% endblock %}

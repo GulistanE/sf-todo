@@ -1,0 +1,28 @@
+{% for todo in todos %}
+<div class="row todo">
+    <div class="col-sm-11">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <em>Publié le {{ todo.date|date('d/m/Y') }}</em>
+            <p>
+            {{ todo.content }}
+            </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-1">
+        <p>
+           
+            {##}
+            <a href="{{ path('todo_edit', { 'id': todo.id }) }} " class="btn btn-xs btn-warning">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+
+            {##}
+            <a href="{{ path('todo_trash', { 'id': todo.id }) }}" class="btn btn-xs btn-danger">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </p>
+    </div>
+</div>
+{% endfor %}
