@@ -17,10 +17,10 @@
         </div>
     </div>
     <div class="container">
-        {#%  if mode == 'trashed' %#}
-            {% include "AppBundle:Todo:_trashed_list.html.twig" with {'todos': todos} %}
-        {#%  else %#}
+        
+            {#% include "AppBundle:Todo:_trashed_list.html.twig" with {'todos': todos} %#}
+
             {% include "AppBundle:Todo:_default_list.html.twig" with {'todos': todos} %}
-        {#%  endif %#}
+        
     </div>
 {% endblock %}

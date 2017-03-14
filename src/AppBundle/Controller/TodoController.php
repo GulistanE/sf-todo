@@ -30,7 +30,7 @@ class TodoController extends Controller
 
         $todos = $em
             ->getRepository('AppBundle:Todo')
-            ->findBy( [], ['date' => 'DESC'] );
+            ->findBy( ['trashed'=>false], ['date' => 'DESC'] );
 
         return $this->render('AppBundle:Todo:index.html.twig', [
             'todos' => $todos,
@@ -41,12 +41,15 @@ class TodoController extends Controller
     public function addAction(Request $request)
     {
         $todo = new Todo();
+
         $form = $this
             ->createForm(new TodoType(), $todo)
-            ->add('save', new SubmitType(), [
-                'label' =>'Ajouter',
-                'attr' => ['class' => 'btn btn-sm btn-success',]
-                ]);
+            ->add('submit', 'submit', [
+                'label' => 'Ajouter',
+                'attr'  => [
+                'class' => 'btn btn-warning'
+                ]
+            ]);
 
         $form->handleRequest($request);
 
@@ -55,15 +58,10 @@ class TodoController extends Controller
             $em->persist($todo);
             $em->flush($todo);
 
-            return $this->redirectToRoute('todo_new', array('id' => $todo->getId()));
+            return $this->redirectToRoute('todo_index');
         }
 
-        $todos = $this
-            ->getDoctrine()
-            ->getRepository('AppBundle:Todo')
-            ->findBy([], ['date' => 'DESC']);
-
-        return $this->render('AppBundle:App:index.html.twig', array(
+        return $this->render('AppBundle:Todo:index.html.twig', array(
             'todo' => $todo,
             'form' => $form->createView(),
         ));
@@ -112,70 +110,51 @@ class TodoController extends Controller
         ]);
 	}
 
-    public function removeAction(Request $request)
+    public function archiveAction($id)
     {
-        $todo = $this
-            ->getDoctrine()
-            ->getRepository('AppBundle:Todo')
-            ->find($request->attributes->get('id'));
+    $em = $this->getDoctrine()->getManager();
+	
+    $todo = $em
+        ->getRepository('AppBundle:Todo')
+        ->find($id);
 
-         $form = $this->removeConfirmationForm($todo, [
-            'action' => $this->generateUrl('todo_remove', [
-                'todoId' => $todo->getTodo()->getId(),
-            ]),
-        ]);
-
-        $form = $this
-            ->createForm(new TodoType(), $todo, [
-                'action' => $formAction,
-            ])
-            ->add('submit', 'submit', [
-                'label' => 'Supprimer',
-                'attr'  => [
-                'class' => 'btn btn-warning'
-                ]
-            ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($todo);
-            $em->flush();
-
-            $this->addFlash('success', 'Le todo a bien été supprimé.');
+        if (!$todo) {
+            throw $this->createNotFoundException('Todo not found');
         }
+		
+		$todo->setTrashed(0);
+		$em->flush();
+		
+		return $this->redirectToRoute('todo_index', ['trashed' => 0]);
+	}
 
-        $todos = $this
-            ->getDoctrine()
-            ->getRepository('AppBundle:Todo')
-            ->findBy([], ['date' => 'DESC']);
+    public function restoreAction($id)
+    {
+		$em = $this->getDoctrine()->getManager();
+		$todo = $em
+			->getRepository('AppBundle:Todo')
+			->find($id);
 
-        return $this->render('AppBundle:Todo:index.html.twig', [
-            'todos' => $todos,
-            'form' => $form->createView(),
-        ]);
-    }
+		if (!$todo) {
+			throw $this->createNotFoundException('Todo not found');
+		}
+		
+		$todo->setTrashed(1);
+		$em->flush();
+		
+		return $this->redirectToRoute('todo_index', ['trashed' => 1]);
+	}
 
     public function trashAction(Request $request)
     {
         $todo = $this->findTodoByRequest($request);
 
-        $form = $this->restoreConfirmationForm($todo, [
+        $form = $this->createDeleteConfirmationForm($todo, [
             'action' => $this->generateUrl('todo_trash', [
                 'todoId' => $todo->getTodo()->getId(),
             ]),
         ]);
 
-        $form = $this
-            ->createForm()
-            ->add('submit', 'submit', [
-                'label' => 'Archiver',
-                'attr' => [
-                    'class' => 'btn btn-warning'
-                ]
-            ]);
-        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

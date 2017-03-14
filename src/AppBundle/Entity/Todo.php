@@ -34,7 +34,7 @@ class Todo
      */
     public function __construct()
     {
-        $this->validated = false;
+        $this->trashed = false;
         $this->date = new \DateTime();
     }
 

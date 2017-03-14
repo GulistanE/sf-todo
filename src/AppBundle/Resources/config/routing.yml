@@ -17,15 +17,10 @@ todo_trash:
     defaults: 
         _controller: AppBundle:Todo:trash 
 
-todo_trashed:
-    path: /todo/{id}/trashed
+todo_archive:
+    path: /todo/{id}/archive
     defaults: 
-        _controller: AppBundle:Todo:trashed 
-
-todo_remove:
-    path: /todo/{id}/remove
-    defaults:
-        _controller: AppBundle:Todo:remove
+        _controller: AppBundle:Todo:archive 
 
 todo_restore:
     path: /todo/{id}/restore
